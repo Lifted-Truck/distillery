@@ -9,14 +9,15 @@
 
 - **D0 — Charter.** Directory scaffolded, manifest drafted, brief filed with
   autonomous, boundaries stated. *Gate: human ratifies the manifest and this
-  roadmap.* **← current phase**
+  roadmap.* **CLOSED 2026-07-10** (user go-ahead; brief answered —
+  contracts pinned below).
 - **D1 — The stream (deterministic ingest).** Append-only journal schema
   (dated, provenance, origin LIBRARY id, content hash); ingest CLI that
   sweeps configured roots (hash-ledgered, skip-unchanged — reuse/extract the
   audit loop's SCAN, don't reimplement); idempotent re-runs. NO model calls
   anywhere in D1. *Gate: two consecutive sweeps over the real project tree —
   second is a no-op; injected duplicate lesson is detected; ledger replays
-  byte-identical; `./verify full` green.*
+  byte-identical; `./verify full` green.* **← current phase**
 - **D2 — Stream operations.** Eviction/compaction policy for the warehouse
   (append-only ≠ unbounded working set: segment + archive), staleness
   annotation (falsifier re-run where lessons carry verification commands),
@@ -46,6 +47,13 @@
 2. **Reuse the audit loop's SCAN mechanics** rather than reimplementing —
    file a brief with agent-knowledge-loop if extraction into a shared
    primitive is needed.
+3. **Pins** (2026-07-10, per autonomous's response to distillery-001):
+   `library-entry.1` (validation contract; malformed entries quarantine
+   visibly, never block) and the shared sweep primitive
+   (`autonomous/kit/sweep/sweep.py`; our own ledger file). P3 hand-off
+   recorded: gates implemented HERE, spec canonical in autonomous doctrine.
+   Owed: contract-test fixtures for `library-entry.1` (author during D1,
+   file via the integrations channel).
 
 ## Open questions (blocking, ask the human)
 
