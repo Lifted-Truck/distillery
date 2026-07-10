@@ -1,0 +1,28 @@
+{
+  "schema": "project-manifest.0 (draft — kit v2 will formalize)",
+  "status": "PROVISIONAL — answers drafted by Claude at scaffold time 2026-07-10; human to ratify at D0 gate",
+  "survey": {
+    "what_is_it": "service/pipeline — ecosystem memory infrastructure (stream ingest, analyst, distilled pool)",
+    "architecture_rung": {
+      "choice": 2,
+      "menu": ["1: single thread", "2: thread + subagents/verifier", "3: organ fleet"],
+      "earned_by": "analyst phase (D3) uses fan-out read-only subagents; correctness stakes of a shared memory store warrant an independent verifier. No parallel writers, no seams that justify a fleet."
+    },
+    "domain_core_llm_must_not_own": "sweep mechanics, hash ledger, append-only journal, dedup, eviction, staleness checks, provenance queries — all deterministic code. AI only: analyst pattern-mining (propose-only) and promotion judgment.",
+    "oracle_shape": {
+      "goldens": "strict pinned outputs for ledger ops and fixture-stream queries (deterministic by construction)",
+      "ci": "single-version smoke initially; matrix when consumers exist"
+    },
+    "second_implementation": false,
+    "consumers_and_providers": {
+      "consumes": ["autonomous (kit core, LIBRARY entry format, sweep primitive)", "agent-knowledge-loop (SCAN mechanics, promotion gates)"],
+      "consumed_by": ["project curators (distilled pool)", "autonomous P3 down-propagation", "potentially dispatch (lesson-highlights in digests)"]
+    },
+    "parallel_audit_thread": false,
+    "knowledge_loop_tags": ["sweep-mechanics", "promotion-gates", "retrieval-hygiene", "provenance", "cron-ops", "stream-schema"],
+    "lifespan_autonomy": {
+      "lifespan": "long-lived (ecosystem infrastructure)",
+      "autonomy_tier": "scheduled unattended sweeps OK from D1 (read-only + own-journal writes); analyst propose-only from D3; distilled-pool writes ALWAYS behind ratification until an ecosystem curator role is decided (see autonomous ROADMAP, ecosystem-lead milestone)"
+    }
+  }
+}
