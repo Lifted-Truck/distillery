@@ -50,9 +50,15 @@
 ## Open questions (blocking, ask the human)
 
 - Sweep cadence for ingest (daily? on the audit loop's weekly rhythm?).
-- Which roots are in scope for sweep v1 (all of ~/Documents/Claude, or an
-  allowlist?).
 - Storage form for the stream (jsonl-in-git vs SQLite+jsonl à la Beads).
+
+## Answered (moved from open questions)
+
+- **Sweep scope** (2026-07-10): the canonical ecosystem allowlist at
+  `autonomous/registry.json` (autonomous Decision 14). Rule-based; groups
+  recurse one level (synthetic-worlds is a group of ~16 projects); harness/
+  loop status is derived at sweep time — nonconforming or loop-less projects
+  are recorded-and-quarantined, never sweep blockers.
 
 ## Deferred / demoted
 
