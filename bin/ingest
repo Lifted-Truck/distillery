@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+"""bin/ingest — CLI adapter for distillery's D1 deterministic ingest core.
+
+The only wall-clock read in the whole ingest path lives HERE (--date default
+= today, computed at the edge). Everything downstream (distillery.ingest) is
+a pure function of its arguments.
+
+Usage:
+  bin/ingest [--registry PATH] [--sweep PATH] [--stream PATH] [--ledger PATH]
+             [--date YYYY-MM-DD]
+
+Output: the deterministic run summary as JSON on stdout.
+Exit 0 on success, 2 on bad invocation.
+"""
+
+import argparse
+import datetime
+import importlib.util
+import json
+import os
+import sys
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _load_module(path, name):
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError("cannot load module %s from %s" % (name, path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="ingest")
+    ap.add_argument(
+        "--registry",
+        default="~/Documents/Claude/autonomous/registry.json",
+        help="path to the ecosystem registry.json",
+    )
+    ap.add_argument(
+        "--sweep",
+        default="~/Documents/Claude/autonomous/kit/sweep/sweep.py",
+        help="path to the pinned shared sweep primitive",
+    )
+    ap.add_argument(
+        "--stream",
+        default=os.path.join(REPO_ROOT, "stream", "stream.jsonl"),
+        help="path to the append-only stream journal",
+    )
+    ap.add_argument(
+        "--ledger",
+        default=os.path.join(REPO_ROOT, "stream", "ledger.json"),
+        help="path to the hash ledger",
+    )
+    ap.add_argument(
+        "--date",
+        default=None,
+        help="YYYY-MM-DD ingest stamp (default: today, computed here)",
+    )
+    args = ap.parse_args(argv)
+
+    registry_path = os.path.abspath(os.path.expanduser(args.registry))
+    sweep_path = os.path.abspath(os.path.expanduser(args.sweep))
+    date = args.date or datetime.date.today().isoformat()
+
+    if not os.path.isfile(registry_path):
+        print("ingest: registry not found: %s" % registry_path, file=sys.stderr)
+        return 2
+    if not os.path.isfile(sweep_path):
+        print("ingest: sweep module not found: %s" % sweep_path, file=sys.stderr)
+        return 2
+
+    try:
+        with open(registry_path) as f:
+            registry = json.load(f)
+    except (OSError, ValueError) as exc:
+        print("ingest: cannot read registry %s: %s" % (registry_path, exc), file=sys.stderr)
+        return 2
+
+    try:
+        sweep_mod = _load_module(sweep_path, "distillery_sweep")
+    except ImportError as exc:
+        print("ingest: cannot load sweep module: %s" % exc, file=sys.stderr)
+        return 2
+
+    if REPO_ROOT not in sys.path:
+        sys.path.insert(0, REPO_ROOT)
+    from distillery import ingest as ingest_core
+
+    summary = ingest_core.run_ingest(registry, sweep_mod, args.stream, args.ledger, date)
+    print(json.dumps(summary, sort_keys=True, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
