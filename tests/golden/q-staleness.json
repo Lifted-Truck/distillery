@@ -1,0 +1,74 @@
+[
+  {
+    "origin": "alpha#L0001",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "alpha#L0002",
+    "reason": "superseded",
+    "status": "stale",
+    "superseded_by": "alpha#L0003"
+  },
+  {
+    "origin": "alpha#L0003",
+    "reason": "superseded",
+    "status": "stale",
+    "superseded_by": "alpha#L0004"
+  },
+  {
+    "origin": "alpha#L0004",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "alpha#L0005",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "beta#L0005",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "alpha#L0006",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "gamma#L0006",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "beta#L0001",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "gamma#L0001",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "gamma#L0002",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  },
+  {
+    "origin": "gamma#L0003",
+    "reason": null,
+    "status": "fresh",
+    "superseded_by": null
+  }
+]

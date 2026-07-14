@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""bin/query — CLI adapter for distillery's D2 read-side provenance queries.
+
+Output is for a human, curator, or the D3 analyst — never wired into a
+working agent's retrieval context.
+
+The only wall-clock read in D2 lives HERE (--today default = today, computed
+at the edge). Everything downstream (distillery.query) is a pure function of
+its arguments; no model calls, no network, no mutation.
+
+Usage:
+  bin/query [--stream PATH] lessons --project NAME [--include-quarantine]
+  bin/query [--stream PATH] recurrences [--near]
+  bin/query [--stream PATH] staleness [--age-days N] [--today YYYY-MM-DD]
+
+Output: JSON (json.dumps(result, sort_keys=True, indent=2)) on stdout.
+Exit 0 on success, 2 on bad invocation.
+"""
+
+import argparse
+import datetime
+import json
+import os
+import sys
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+DESCRIPTION = (
+    "Read-only provenance queries over the D1 stream journal. Output is for "
+    "a human, curator, or the D3 analyst — never wired into a working "
+    "agent's retrieval context."
+)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="query", description=DESCRIPTION)
+    ap.add_argument(
+        "--stream",
+        default=os.path.join(REPO_ROOT, "stream", "stream.jsonl"),
+        help="path to the append-only stream journal",
+    )
+    sub = ap.add_subparsers(dest="command", required=True)
+
+    p_lessons = sub.add_parser(
+        "lessons", help="every lesson record for a project, in journal order"
+    )
+    p_lessons.add_argument("--project", required=True, help="registry project name")
+    p_lessons.add_argument(
+        "--include-quarantine",
+        action="store_true",
+        help="also include that project's quarantine records, interleaved",
+    )
+
+    p_recur = sub.add_parser(
+        "recurrences", help="lesson groups spanning >=2 distinct projects"
+    )
+    p_recur.add_argument(
+        "--near",
+        action="store_true",
+        help="use the normalized near-signature instead of the exact hash",
+    )
+
+    p_stale = sub.add_parser("staleness", help="fresh/stale annotation per lesson")
+    p_stale.add_argument(
+        "--age-days",
+        type=int,
+        default=180,
+        help="a lesson older than this many days (and not superseded) is aged (default: 180)",
+    )
+    p_stale.add_argument(
+        "--today",
+        default=None,
+        help="YYYY-MM-DD reference date (default: today, computed here)",
+    )
+
+    args = ap.parse_args(argv)
+
+    stream_path = os.path.abspath(os.path.expanduser(args.stream))
+    if not os.path.isfile(stream_path):
+        print("query: stream not found: %s" % stream_path, file=sys.stderr)
+        return 2
+
+    if REPO_ROOT not in sys.path:
+        sys.path.insert(0, REPO_ROOT)
+    from distillery import query as query_core
+
+    records = query_core.load_journal(stream_path)
+
+    if args.command == "lessons":
+        result = query_core.lessons_by_project(
+            records, args.project, include_quarantine=args.include_quarantine
+        )
+    elif args.command == "recurrences":
+        result = query_core.recurrences(records, near=args.near)
+    elif args.command == "staleness":
+        today = args.today or datetime.date.today().isoformat()
+        result = query_core.staleness(records, today, args.age_days)
+    else:
+        print("query: unknown command: %s" % args.command, file=sys.stderr)
+        return 2
+
+    print(json.dumps(result, sort_keys=True, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

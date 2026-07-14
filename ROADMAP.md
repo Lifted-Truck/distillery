@@ -23,13 +23,22 @@
   byte-identical, `./verify full` green (independent verifier). Trace:
   traces/2026-07-11-d1-stream-ingest.md. Follow-ups owed by the provider
   (distillery-002) and the daily-schedule wiring do not gate closure.
-- **D2 — Stream operations.** **← current phase.** Eviction/compaction policy for the warehouse
-  (append-only ≠ unbounded working set: segment + archive), staleness
-  annotation (falsifier re-run where lessons carry verification commands),
-  provenance queries ("show every lesson from project X", "show recurrences
-  of signature Y"). *Gate: golden query results over a fixture stream;
-  archive/restore round-trip.*
-- **D3 — The analyst.** Fan-out read-only analysis over the stream
+- **D2 — Stream operations.** Deterministic staleness
+  annotation + provenance queries ("show every lesson from project X", "show
+  recurrences of signature Y"). *Gate: golden query results (lessons /
+  recurrences exact+near / staleness) over a fixture stream.* **Scope pinned
+  2026-07-11 (decisions 9, 11):** deterministic staleness only (supersession
+  + age); "signature" = deterministic content-hash / normalized-text
+  grouping, NOT semantic detection (D3's boundary). **Eviction/compaction
+  (segment + archive) DEFERRED** — see Deferred/demoted; it is speculative at
+  current scale and introduces a D1-dedup seam that must be designed in, not
+  bolted on. **CLOSED 2026-07-13** — `distillery/query.py` + `bin/query`
+  (lessons/recurrences-exact+near/staleness), golden query gate over the
+  13-record fixture stream green in the unit suite, `./verify full` green
+  (59 tests, independent verifier). Two critic rounds shaped it (archive
+  deferred; near-signature boundary ruled). Traces:
+  traces/2026-07-13-d2-query-cli.md + traces/2026-07-13-d2-close.md.
+- **D3 — The analyst.** **← current phase.** Fan-out read-only analysis over the stream
   (fresh-context subagents, distilled ≤2K-token findings); recurrence and
   contradiction detection; output = dated `proposals/<date>.proposal.md`
   (propose-only, ready-to-apply entries with origins + falsifiers — same
@@ -100,6 +109,42 @@
    `library-entry.2`. Distillery does NOT extend the parser beyond the
    pinned contract meanwhile.
 
+9. **D2 scope pinned** (2026-07-11, human ruling): staleness is
+   deterministic — a lesson is stale if superseded (a later record carries
+   `supersedes: <its id>`) or aged past a documented threshold. No execution
+   of embedded verification commands (evidence: 0/21 D1-corpus lessons carry
+   an executable falsifier; `library-entry.1` has no executable-check field;
+   executing swept content is untrusted-code execution). Falsifier-execution
+   staleness is deferred until a lesson class with executable checks is
+   actually defined (a `library-entry.2` concern, overlaps distillery-002).
+   Recurrence queries group by deterministic signature (content-hash /
+   normalized text); semantic recurrence stays D3's.
+10. **Stream single-writer invariant + flock-before-cron gate** (2026-07-11):
+    the daily ingest cron will be the first automated stream writer. Current
+    guarantee = documented single-writer invariant (at most one
+    stream-mutating process at a time; ingest is run manually, sequentially).
+    **Hard gate:** an `fcntl.flock` on `stream/.lock` acquired by D1 append
+    MUST land before the daily cron is wired. (This originally also covered
+    archive-vs-append; archive is now deferred — decision 11 — so today the
+    only mutator is ingest, and the flock requirement travels with the
+    cron-wiring task.)
+11. **D2 archive/compaction DEFERRED** (2026-07-11, human ruling after two
+    critic rounds): D2 ships provenance queries + deterministic staleness
+    only. Rationale: at 28 records we are ~180× below the 5000-record
+    segment threshold, so archive machinery is speculative infrastructure;
+    and the second critic round proved it introduces a **D1-dedup seam** —
+    D1's `load_seen` scans only the live journal (`journal.py:17-49`,
+    `ingest.py:70`), so once archiving relocates records out of live, the
+    next changed-LIBRARY re-ingest re-appends the archived lessons
+    (duplicate `(project,hash)` across live+archive, silently dropped by any
+    restore-dedup). **When archive is built (a future scale-triggered
+    phase), the fix is mandatory and designed-in, not bolted-on:** the dedup
+    seen-set must cover live ∪ archive (union-scan, or a durable
+    (project,hash) key-index archiving never touches), with a conservation
+    gate — archive a fixture, re-ingest a changed library that had archived
+    lessons, assert zero re-append. Until then D2 queries read the live
+    journal directly; no live/archive union exists, so no seam.
+
 ## Open questions (blocking, ask the human)
 
 - **`source` field: absolute vs repo-relative** (raised 2026-07-11, D1
@@ -134,6 +179,15 @@
 - Ecosystem-lead role (see autonomous/ROADMAP.md — gated, post-D4).
 - Embedding-based dedup/similarity (D1 uses content-hash + textual match;
   embeddings only if measurably needed).
+- **Stream eviction / compaction (segment + archive)** — bounding the live
+  working set once it grows large. Deferred from D2 (decision 11): speculative
+  at 28 records (~180× below the 5000-record trigger) and it introduces a
+  D1-dedup seam (archived keys leave `load_seen`'s live-only scan → re-append
+  on the next changed-LIBRARY ingest). Revive when the live journal actually
+  approaches the threshold; the design (crash-atomic segments + recover() +
+  the mandatory dedup-union/key-index conservation fix) is captured in
+  decision 11 and the git history of docs/stream-ops.md. Not a blocker for
+  D3/D4 — the analyst reads the whole stream regardless of segmentation.
 - **Human-facing roadmap roundup** — a digest of every project's
   ROADMAP/status for human viewing. **Owner: `dispatch`** (confirmed with
   the human 2026-07-11); NOT distillery — this is the *lesson* pipeline, not

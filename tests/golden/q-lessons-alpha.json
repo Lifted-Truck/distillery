@@ -1,0 +1,148 @@
+[
+  {
+    "entry": {
+      "added": "2026-07-01",
+      "evidence": "seen in D1.",
+      "falsifier": "if big sets win.",
+      "id": "L0001",
+      "lesson": "Keep the working set small.",
+      "tags": [
+        "hygiene"
+      ],
+      "tier": "candidate",
+      "title": "Fresh anchor"
+    },
+    "entry_contract": "library-entry.1",
+    "hash": "75447eb40d115e09",
+    "kind": "lesson",
+    "origin": "alpha#L0001",
+    "project": "alpha",
+    "raw": "[L0001] Fresh anchor | candidate | added: 2026-07-01 | tags: hygiene | lesson: Keep the working set small. | evidence: seen in D1. | falsifier: if big sets win.",
+    "source": "tests/fixtures/stream-src/alpha/LIBRARY.md",
+    "source_hash": "d384b5c68c9eeaf9",
+    "swept": "2026-07-05",
+    "v": "stream-record.1"
+  },
+  {
+    "entry": {
+      "added": "2026-01-01",
+      "evidence": "early note.",
+      "falsifier": "if still current.",
+      "id": "L0002",
+      "lesson": "Old take on eviction.",
+      "tags": [
+        "hygiene"
+      ],
+      "tier": "candidate",
+      "title": "Aged + superseded"
+    },
+    "entry_contract": "library-entry.1",
+    "hash": "81c227f8f9e57343",
+    "kind": "lesson",
+    "origin": "alpha#L0002",
+    "project": "alpha",
+    "raw": "[L0002] Aged + superseded | candidate | added: 2026-01-01 | tags: hygiene | lesson: Old take on eviction. | evidence: early note. | falsifier: if still current.",
+    "source": "tests/fixtures/stream-src/alpha/LIBRARY.md",
+    "source_hash": "d384b5c68c9eeaf9",
+    "swept": "2026-07-05",
+    "v": "stream-record.1"
+  },
+  {
+    "entry": {
+      "added": "2026-06-01",
+      "evidence": "refinement.",
+      "falsifier": "if reverted.",
+      "id": "L0003",
+      "lesson": "Refined take on eviction.",
+      "supersedes": "L0002",
+      "tags": [
+        "hygiene"
+      ],
+      "tier": "candidate",
+      "title": "Mid supersede"
+    },
+    "entry_contract": "library-entry.1",
+    "hash": "7b75b97dc6f77e28",
+    "kind": "lesson",
+    "origin": "alpha#L0003",
+    "project": "alpha",
+    "raw": "[L0003] Mid supersede | candidate | added: 2026-06-01 | tags: hygiene | lesson: Refined take on eviction. | evidence: refinement. | falsifier: if reverted. | supersedes: L0002",
+    "source": "tests/fixtures/stream-src/alpha/LIBRARY.md",
+    "source_hash": "d384b5c68c9eeaf9",
+    "swept": "2026-07-05",
+    "v": "stream-record.1"
+  },
+  {
+    "entry": {
+      "added": "2026-06-15",
+      "evidence": "landed.",
+      "falsifier": "if reverted again.",
+      "id": "L0004",
+      "lesson": "Final take on eviction.",
+      "supersedes": "L0003",
+      "tags": [
+        "hygiene"
+      ],
+      "tier": "canonical",
+      "title": "Head of chain"
+    },
+    "entry_contract": "library-entry.1",
+    "hash": "8ef4b6a7e9395592",
+    "kind": "lesson",
+    "origin": "alpha#L0004",
+    "project": "alpha",
+    "raw": "[L0004] Head of chain | canonical | added: 2026-06-15 | tags: hygiene | lesson: Final take on eviction. | evidence: landed. | falsifier: if reverted again. | supersedes: L0003",
+    "source": "tests/fixtures/stream-src/alpha/LIBRARY.md",
+    "source_hash": "d384b5c68c9eeaf9",
+    "swept": "2026-07-05",
+    "v": "stream-record.1"
+  },
+  {
+    "entry": {
+      "added": "2026-05-01",
+      "evidence": "Tonality flip.",
+      "falsifier": "if a flip leaves thresholds unchanged.",
+      "id": "L0005",
+      "lesson": "Pin priors before building calibrated thresholds on them.",
+      "tags": [
+        "pinning"
+      ],
+      "tier": "candidate",
+      "title": "Pin before calibrating"
+    },
+    "entry_contract": "library-entry.1",
+    "hash": "cfc86559051d0fab",
+    "kind": "lesson",
+    "origin": "alpha#L0005",
+    "project": "alpha",
+    "raw": "[L0005] Pin before calibrating | candidate | added: 2026-05-01 | tags: pinning | lesson: Pin priors before building calibrated thresholds on them. | evidence: Tonality flip. | falsifier: if a flip leaves thresholds unchanged.",
+    "source": "tests/fixtures/stream-src/alpha/LIBRARY.md",
+    "source_hash": "d384b5c68c9eeaf9",
+    "swept": "2026-07-05",
+    "v": "stream-record.1"
+  },
+  {
+    "entry": {
+      "added": "2026-06-20",
+      "evidence": "x.",
+      "falsifier": "if not.",
+      "id": "L0006",
+      "lesson": "Prefer deleting code over adding an abstraction.",
+      "tags": [
+        "hygiene"
+      ],
+      "tier": "candidate",
+      "title": "Reduce"
+    },
+    "entry_contract": "library-entry.1",
+    "hash": "a5d4499743bd3cff",
+    "kind": "lesson",
+    "origin": "alpha#L0006",
+    "project": "alpha",
+    "raw": "[L0006] Reduce | candidate | added: 2026-06-20 | tags: hygiene | lesson: Prefer deleting code over adding an abstraction. | evidence: x. | falsifier: if not.",
+    "source": "tests/fixtures/stream-src/alpha/LIBRARY.md",
+    "source_hash": "d384b5c68c9eeaf9",
+    "swept": "2026-07-05",
+    "v": "stream-record.1"
+  }
+]
