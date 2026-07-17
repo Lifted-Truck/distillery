@@ -83,6 +83,11 @@ def run_ingest(registry, sweep_mod, stream_path, ledger_path, date):
 
         with open(lib_path, "rb") as f:
             raw_bytes = f.read()
+        # source_hash pins WHICH state of the file produced this record. The
+        # file PATH is deliberately NOT stored: sweep returns machine-absolute
+        # paths that would leak the local username + layout into the
+        # append-only journal (ROADMAP decision 12). `project` + the registry
+        # re-derive the LIBRARY path when needed; source_hash carries no path.
         source_hash = _sha256_16(raw_bytes)
         text = raw_bytes.decode("utf-8")
 
@@ -109,7 +114,6 @@ def run_ingest(registry, sweep_mod, stream_path, ledger_path, date):
                 "v": STREAM_RECORD_VERSION,
                 "swept": date,
                 "project": name,
-                "source": lib_path,
                 "source_hash": source_hash,
                 "hash": line_hash,
                 "raw": raw,

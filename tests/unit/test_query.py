@@ -35,7 +35,6 @@ def _lesson(project, entry_id, lesson_text, added, supersedes=None, origin=None)
         "kind": "lesson",
         "swept": "2026-07-05",
         "project": project,
-        "source": "x",
         "source_hash": "0" * 16,
         "hash": "h-%s-%s" % (project, entry_id),
         "raw": raw,

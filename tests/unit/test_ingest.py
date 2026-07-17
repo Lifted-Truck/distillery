@@ -74,6 +74,32 @@ class TestIngestEndToEnd(unittest.TestCase):
             self.assertEqual(rec["swept"], self.date)
             self.assertIn(rec["kind"], ("lesson", "quarantine"))
 
+    def test_no_record_carries_an_absolute_path(self):
+        # ROADMAP decision 12: sweep returns machine-absolute paths; none may
+        # be baked into the append-only journal (username/layout leak into a
+        # public remote). `project` + registry re-derive the file. Mirrors
+        # dispatch's test_facts_carry_no_absolute_path. Guards every string
+        # value in every record, recursively.
+        self._run()
+        records = self._read_jsonl(self.stream_path)
+
+        def strings(obj):
+            if isinstance(obj, str):
+                yield obj
+            elif isinstance(obj, dict):
+                for v in obj.values():
+                    yield from strings(v)
+            elif isinstance(obj, list):
+                for v in obj:
+                    yield from strings(v)
+
+        for rec in records:
+            for s in strings(rec):
+                self.assertFalse(
+                    s.startswith("/") or "/Users/" in s or s.startswith("~/"),
+                    "record leaks an absolute path: %r in %r" % (s, rec.get("origin") or rec.get("raw")),
+                )
+
     def test_first_run_ordering_registry_then_line_number(self):
         self._run()
         records = self._read_jsonl(self.stream_path)
@@ -103,7 +129,10 @@ class TestIngestEndToEnd(unittest.TestCase):
         )
         self.assertEqual(l0002["origin"], "alpha#L0002")
         self.assertEqual(l0002["entry_contract"], "library-entry.1")
-        self.assertEqual(l0002["source"], os.path.join(REPO_ROOT, "tests", "fixtures", "projects", "alpha", "LIBRARY.md"))
+        # No path field is stored (ROADMAP decision 12): `project` + registry
+        # re-derive the file; source_hash pins its state. Absolute paths would
+        # leak the local username/layout into the append-only journal.
+        self.assertNotIn("source", l0002)
         self.assertEqual(len(l0002["source_hash"]), 16)
         self.assertEqual(len(l0002["hash"]), 16)
         self.assertNotIn("supersedes", l0002["entry"])

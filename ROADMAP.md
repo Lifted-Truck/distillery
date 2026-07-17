@@ -144,18 +144,34 @@
     gate — archive a fixture, re-ingest a changed library that had archived
     lessons, assert zero re-append. Until then D2 queries read the live
     journal directly; no live/archive union exists, so no seam.
+12. **No path string in any record — drop `source`** (2026-07-17, human
+    ruling; closes the D1 open question). Records dropped the absolute
+    `source` path: sweep returns machine-absolute paths that bake the local
+    username + layout into an append-only journal bound for a public remote.
+    `project` (registry name) is the portable file identifier — the LIBRARY
+    path is `registry-resolve(project)/LIBRARY.md`, re-derivable — and
+    `source_hash` pins the file's state, so a stored path is redundant AND
+    leaky. Relativizing was rejected: the roster spans multiple roots
+    (`~/Documents/Claude/*`, `~/Documents/Tonality`, …), so "repo-relative
+    to one root" is ill-defined. Kept `stream-record.1` (no real data ever
+    persisted `source`, so a `.2` bump would be ceremony). Guarded by
+    `test_no_record_carries_an_absolute_path`. **Provenance intact:**
+    `project`+registry = which file, `source_hash` = which state.
+    *Cross-project reference:* dispatch hit the identical leak in its FACTS
+    collector and resolved it the same way (drop the path, `name` is the id,
+    guard test) — dispatch decision 7, traces/2026-07-13-portable-facts.md.
+    We adopted the *principle* (writes-stay-home: each repo rules its own),
+    and — because we HELD the genesis data — fixed it with a plain edit
+    where dispatch had to rewrite committed git history.
 
 ## Open questions (blocking, ask the human)
 
-- **`source` field: absolute vs repo-relative** (raised 2026-07-11, D1
-  gate review). Records currently store an *absolute* LIBRARY path, which
-  bakes the local username + machine layout into the append-only journal
-  (destined for a public remote) and is non-portable across clones. The
-  critic's finding #1 specified repo-relative. `stream-record.1` is
-  otherwise frozen at the D1 gate, so this must be resolved BEFORE the first
-  real `stream/` data is committed — after that it is a `stream-record.2`
-  migration and the paths persist in history. **Blocks the genesis fill,
-  not the D1 machinery commit.**
+- (none currently) — the genesis fill remains gated only on `distillery-002`
+  (decision 8, provider ball, respond-by 2026-07-18): committing the real
+  stream now would bake in 7 quarantine records that a `library-entry.2`
+  continuation grammar could later turn into lessons, permanently superseded
+  in the append-only history. Not a blocker for D3 (the analyst reads the
+  fixture stream; the real fill can follow the ruling).
 
 ## Answered (moved from open questions)
 

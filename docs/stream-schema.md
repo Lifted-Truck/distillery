@@ -40,9 +40,8 @@ and assert byte identity.
 | `v` | `"stream-record.1"` | Schema version stamp (INTEGRATIONS rule 4). |
 | `kind` | `"lesson"` \| `"quarantine"` | Record class. |
 | `swept` | `YYYY-MM-DD` | Ingest date. **Injected by the CLI adapter** (`--date`, defaulting to today at the edge); the deterministic core never reads the wall clock. |
-| `project` | string | Registry name (e.g. `synthetic-worlds/Wend`), as resolved by the sweep primitive. Registry name IS project identity: a directory rename is a new project and its lessons re-append under the new name — accepted accumulation, documented so the D3 analyst does not read a rename as a cross-project recurrence. |
-| `source` | string | Absolute path of the source LIBRARY.md at ingest time (file-level provenance). |
-| `source_hash` | 16-hex | `sha256(file_bytes)[:16]` of the source file **as read by this ingest** — pins which state of the file produced this record. |
+| `project` | string | Registry name (e.g. `synthetic-worlds/Wend`), as resolved by the sweep primitive. Registry name IS project identity: a directory rename is a new project and its lessons re-append under the new name — accepted accumulation, documented so the D3 analyst does not read a rename as a cross-project recurrence. This is the **portable** file identifier — the LIBRARY path is `registry-resolve(project)/LIBRARY.md`, re-derivable from `project` + the registry, so no path string is stored (see ROADMAP decision 12). |
+| `source_hash` | 16-hex | `sha256(file_bytes)[:16]` of the source LIBRARY.md **as read by this ingest** — pins which state of the file produced this record. Carries no path (no username/layout leak). |
 | `hash` | 16-hex | `sha256(raw.encode("utf-8"))[:16]` — content hash of the source line. |
 | `raw` | string | The source LIBRARY.md line after Python `str.strip()` (Unicode-whitespace-aware — a trailing NBSP and a trailing space normalize identically; provenance is verbatim *modulo edge whitespace*). |
 
@@ -148,6 +147,11 @@ over identical inputs produce byte-identical journals.
 ## Invariant restated (charter §Domain)
 
 Every record carries date (`swept`), origin (`origin` for lessons;
-`project`+`line_no` for quarantines), file provenance (`source`,
-`source_hash`), content `hash`, and the falsifier whenever one parses.
-A record without provenance is a bug. No model calls anywhere in this path.
+`project`+`line_no` for quarantines), file provenance (`project` identifies
+the file via the registry; `source_hash` pins its state), content `hash`,
+and the falsifier whenever one parses. A record without provenance is a bug.
+**No absolute path — ever — in any record** (ROADMAP decision 12): sweep
+returns machine-absolute paths that would bake the local username + layout
+into an append-only file bound for a public remote; `project` is the
+portable identifier and `source_hash` the state pin, so the path string is
+redundant and dropped. No model calls anywhere in this path.
