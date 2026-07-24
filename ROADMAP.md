@@ -163,6 +163,57 @@
     We adopted the *principle* (writes-stay-home: each repo rules its own),
     and — because we HELD the genesis data — fixed it with a plain edit
     where dispatch had to rewrite committed git history.
+13. **Promotion boundary + routing taxonomy ratified** (2026-07-17, human).
+    Governs D3's proposal format and D4's gates; sharpens autonomous README
+    §4c without relaxing any of its gates.
+    - **Hard gates inherited from §4c** (unchanged): qualified at source
+      (canonical, or independently found by ≥2 siblings); generalizes beyond
+      origin (litmus: statable without naming the origin's code);
+      dedup-by-merge preserving concrete evidence; provenance + falsifier
+      never dropped; parent = intersection, not union — when in doubt, don't
+      promote.
+    - **Transfer breadth decides altitude**: top pool = cross-DOMAIN
+      transfer; niche-shared lessons (e.g. eigensolver numerics) route to
+      the group scope owned by the audit loop. Slots downstream are scarce
+      (~100–150 CLAUDE.md instructions; selective beat comprehensive 39% vs
+      13% — autonomous/research/2026-07-10-memory-governance.md).
+    - **Routing taxonomy — a PROPOSAL VOCABULARY, not delivery machinery.**
+      Each D3 proposal entry carries
+      `route: pool | group-scope | provider-docs | machine-local |
+      reference | merge-as-evidence | undecided` + reasoning. Distillery
+      delivers ONLY the pool route (its own D4 gate). Other routes are
+      handed to their owners: group-scope → audit loop's next cycle;
+      provider-docs → a brief via the integrations channel; machine-local →
+      surfaced to the human (their ~/.claude/CLAUDE.md; machine-local
+      content must NEVER enter the pool — it is bound for a public remote);
+      reference/merge-as-evidence → distillery's own annotations. No
+      automated cross-repo delivery, ever (writes-stay-home + reduce).
+    - **Default route is `undecided`**, surfaced to the human with the
+      tension stated. Asymmetry: misrouting AWAY from the pool is cheap
+      (stream keeps everything; re-proposal is free); misrouting INTO it
+      spends a scarce slot and curator trust. When torn, don't route — ask.
+    - **Recurrence outranks eloquence**: analyst proposes pool entry on
+      OBSERVED recurrence (≥2 independent origins). Single-origin lessons
+      are proposable only with an explicit `single-origin` flag for human
+      sponsorship (ratified alongside this decision).
+    - **Falsifier quality is a promotion gate**: at D4, a falsifier must
+      name a checkable observation ("if this stops working" fails).
+      Judgment is allowed — promotion is the AI-judgment + human-ratification
+      zone.
+    - **Every non-pool route writes a stream annotation** against the
+      record's origin (append-only, our own journal) so later analyst runs
+      see prior dispositions instead of re-proposing forever.
+    - **Pool health metric is CONSUMPTION, not size** — recorded now,
+      deliberately: the pool growing slowly (perhaps 2–3 entries while the
+      stream holds hundreds) is the design working, not failing. Future
+      pressure to loosen routing to make the pool look productive meets
+      this recorded decision, not an open question. Measure: does a curator
+      pull an entry down; does it survive its falsifier.
+    Current-corpus calibration (2026-07-17): under this boundary, 0 of 21
+    stream lessons enter the top pool today — 1 formally qualifies but
+    routes to group scope (Curvature#L0001); the strongest candidate
+    (Wend#L0001, Goodhart) awaits a second independent occurrence or human
+    sponsorship. This slow start is expected and correct.
 
 ## Open questions (blocking, ask the human)
 
