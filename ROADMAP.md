@@ -214,6 +214,28 @@
     routes to group scope (Curvature#L0001); the strongest candidate
     (Wend#L0001, Goodhart) awaits a second independent occurrence or human
     sponsorship. This slow start is expected and correct.
+14. **First human-sponsored promotion candidate designated:
+    `synthetic-worlds/HYPERSAW#L0019`** (2026-07-29, human sponsorship in
+    session — the decision-13 single-origin path exercised for the first
+    time). "Humanised timing is CORRECTED error, not independent jitter":
+    canonical at source (human review recorded in-entry), generalizes
+    beyond origin (any onset-timing humanisation, MIDI or audio, incl.
+    multi-agent performance timing), falsifier passes the quality gate
+    (matched-variance listening test with lag-1 autocorrelation as the
+    manipulated variable; claim scope explicitly bounded). Audience spans
+    multiple scope subtrees (synthetic-worlds group + Tonality lineage +
+    audio-plugin projects) → top-pool altitude per decision 13. Ingested
+    2026-07-29 with provenance. **Role: the live test article for D4's
+    full-path gate** (LIBRARY → stream → analyst proposal → ratified
+    promotion → consumed by a different project). Near-term visibility to
+    the synthetic-worlds scope is the audit loop's canonical vertical path,
+    not an ad-hoc distillery broadcast. Field note: the same sweep
+    quarantined 4 of HYPERSAW's 19 entries on exactly the distillery-002
+    ambiguities (pipes-in-prose — now observed in the wild — and a new
+    annotated-placeholder pattern, `supersedes: — (refines …)`); one
+    quarantined entry (L0016, detector-calibration) is itself
+    domain-general. Contract friction is now costing real promotion-worthy
+    content; evidence appended to the overdue distillery-002 filing.
 
 ## Open questions (blocking, ask the human)
 
