@@ -65,34 +65,92 @@ Per the `library-entry.1` validation stance: malformed entries quarantine
 participate in `(project, hash)` dedup — a malformed line quarantines once,
 not on every sweep.
 
-## Entry-line detection (what gets parsed vs ignored vs quarantined)
+## Entry detection & parsing — `library-entry.2` (ROADMAP decision 15)
 
-Detection runs line-by-line with **fenced-code-block tracking**: a line whose
-stripped form starts with ``` toggles fence state, and every line inside a
-fence is structural regardless of content (real LIBRARYs carry literal
-`[Lxxxx]`/`[L0001]` template examples inside fences — ingesting one would be
-provenance corruption in an append-only store).
+> Upgraded from `library-entry.1` per the provider ruling in
+> `autonomous/integrations/distillery/response-002.md` ("the parser's job is
+> to lose nothing; the promotion gate's job is to judge"). Records carry
+> `entry_contract: "library-entry.2"` from the upgrade forward; existing
+> `.1` records are history, never rewritten.
 
-Outside fences, on the stripped line:
+**Entry span (multi-line entries are valid).** A stripped line matching
+case-insensitive `^\[l` outside a fence **opens an entry span** when the
+*preceding* physical line is blank, structural, or start-of-file, **or when
+the marker line itself contains a `|`** (a real single-line entry always
+carries pipe-delimited fields — attest writes back-to-back entries with no
+blank separators — while a `[Lxxxx]` cross-reference at the start of a
+wrapped prose line, morphos L0012's "Related: [L0009] … / [L0010] …",
+carries none and must NOT open a phantom span). Corpus-verified over all
+registry LIBRARYs on 2026-08-10. The span
+runs until the next marker, a **terminator**, or EOF. Terminators (all
+end the span; nothing folds past them until the next marker): fence lines
+(``` — fenced regions are never ingested; an unbalanced fence increments an
+`unclosed_fence` counter in the run summary rather than silently swallowing
+the file), markdown headings (`^#`), horizontal rules (`^-{3,}$`,
+`^\*{3,}$`, `^_{3,}$`), and HTML anchor lines (`^<a\b`, wont's house
+style). Blank lines inside a span are skipped, NOT terminators (wont's
+entries contain interior blanks). Non-structural span lines fold with
+single spaces into the entry's `raw` — the whole entry is the provenance
+unit, and the folded raw is what is hashed. (Known, accepted loss: a code
+span hard-wrapped across lines gains an interior space.) Content after the
+final entry folds into it unless separated by a heading or rule — which now
+genuinely terminates (pinned by a negative contract fixture). A heading
+line that itself begins with an entry id (`^#+\s*\[?L\d{4}`) quarantines
+visibly — 20 real heading-style entries across 8 projects are otherwise
+invisible; the gap is filed with the provider (distillery-003), not
+silently cemented.
 
-- A line matching case-insensitive `^\[l` is an **attempted entry** — it is
-  parsed and lands as `lesson` or `quarantine`. Near-misses (`[L12]`,
-  `[l0001]`, `[L 0001]`) quarantine with a clear error; they never vanish.
-- Everything else (markdown headers, prose, blanks) is **structural**,
-  ignored.
+**Segment parsing over the folded raw** (split on `|`; **byte-exact
+reconstruction rule**: every field's value is the `"|".join(...)` of its
+raw segments, so joining restores the *exact* splitting pipe — `|v|³` stays
+`|v|³`, never ` | v | ³`):
+- Header: `[Lxxxx] <title>`. Near-miss ids (`[L12]`, `[l0001]`) quarantine
+  with a clear error; they never vanish. A **duplicate id within a file
+  quarantines both** (contract still-quarantine rule 1) — this is also what
+  makes any residual false-marker class visible instead of silent.
+- **Segment 1 only**, if it exactly matches the tier enum → `tier`
+  (canonical contract rule; the ruling-letter's "enum match anywhere" is a
+  documented discrepancy filed back to the provider — we implement the
+  contract file, `kit/contracts/library-entry.md`, which consumers validate
+  against).
+- A segment matching `^\s*(tier|added|tags|origin|lesson|evidence|falsifier|supersedes|recurred)\s*:`
+  opens that field. A **repeat** of an already-seen known label
+  continuation-joins into the existing value (with its label text and pipe
+  restored) — never last-wins (morphos L0007 carries two `evidence:` and
+  two `falsifier:` segments; both survive). The unruled repeat case is
+  filed with the provider.
+- Any other **labeled** segment (`^\s*[\w-]+\s*:`, unknown word —
+  hyphenated labels included) is preserved under the entry's `extra` map
+  (`additionalProperties: string`; repeats join with a restored pipe). An
+  `extra` segment becomes the open field for continuation purposes
+  (locality preserves byte-exact reconstruction).
+- Any other **unlabeled** segment continuation-joins onto the currently
+  open field with the splitting `|` restored. Before any field is open it
+  rejoins the title; with no open field available (e.g. directly after a
+  bare tier) it quarantines as an unattached segment (never in corpus;
+  visible if it ever occurs).
 
-### Parser tolerance (ROADMAP decision 5)
+**Placeholders.** On an **optional** field (`origin`, `supersedes`,
+`recurred`), a value matching `^[—–-]\s*(.*)$` means absent; a non-empty
+remainder is preserved as `<field>_note` (annotations are graph edges, not
+noise). On a **required** field a placeholder still quarantines —
+`falsifier: —` is a missing falsifier.
 
-- Tier accepted as bare (`| candidate |`, contract grammar) or labeled
-  (`| tier: candidate |`, dominant in real LIBRARYs).
-- **Optional** fields (`origin`, `supersedes`, `recurred`) valued `—`, `-`,
-  or empty are treated as absent. A **required** field valued `—`/`-`/empty
-  is a violation and quarantines — normalization never masks a missing
-  required field.
-- After normalization the parsed object must satisfy the `library-entry.1`
-  JSON-Schema (required fields, id pattern `^L\d{4}$`, tier enum, date
-  shape, non-empty tags/lesson/evidence/falsifier) — anything else
-  quarantines.
+**What still quarantines** is the contract's exhaustive list copied
+verbatim from `kit/contracts/library-entry.md` (duplicate id in a file;
+missing/placeholder required fields; id/tier/date shape violations; an
+`origin`/`supersedes` value that is neither a valid `L\d{4}` reference nor
+a placeholder) — negative fixtures pin each so the forgiveness cannot
+creep. The gate is not weakened.
+
+**Seen-key: unchanged, `(project, hash)`.** The quarantine→lesson
+transition problem is moot for the genesis fill: the journal has never been
+committed or consumed, so it is **regenerated from empty under
+`library-entry.2`** (ROADMAP decision 16) — one contract version in the
+journal, no dangling resolved quarantines, no invariant amendment. The
+seam returns for any post-publication contract upgrade; options for that
+future decision (kind-in-key, or supersession links on quarantine records)
+are recorded in decision 16, deliberately not built now.
 
 ## Dedup / idempotency semantics
 

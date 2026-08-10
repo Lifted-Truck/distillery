@@ -14,7 +14,7 @@ import os
 from distillery import entry_parser, journal
 
 STREAM_RECORD_VERSION = "stream-record.1"
-ENTRY_CONTRACT_VERSION = "library-entry.1"
+ENTRY_CONTRACT_VERSION = "library-entry.2"
 
 
 def _sha256_16(data):
@@ -75,6 +75,7 @@ def run_ingest(registry, sweep_mod, stream_path, ledger_path, date):
     total_appended = 0
     total_skipped_dup = 0
     total_quarantined = 0
+    unclosed_fence_files = 0
 
     for proj in changed_records:
         name = proj["name"]
@@ -91,7 +92,9 @@ def run_ingest(registry, sweep_mod, stream_path, ledger_path, date):
         source_hash = _sha256_16(raw_bytes)
         text = raw_bytes.decode("utf-8")
 
-        lessons, quarantines = entry_parser.parse_library(text)
+        lessons, quarantines, parse_meta = entry_parser.parse_library(text)
+        if parse_meta["unclosed_fence"]:
+            unclosed_fence_files += 1
         combined = [(l["line_no"], "lesson", l) for l in lessons]
         combined += [(q["line_no"], "quarantine", q) for q in quarantines]
         combined.sort(key=lambda t: t[0])
@@ -162,4 +165,5 @@ def run_ingest(registry, sweep_mod, stream_path, ledger_path, date):
         "quarantined": total_quarantined,
         "repaired_partial_tail": repaired,
         "per_project": per_project,
+        "unclosed_fence_files": unclosed_fence_files,
     }

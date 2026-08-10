@@ -58,17 +58,18 @@ class TestIngestEndToEnd(unittest.TestCase):
     def test_first_run_counts(self):
         summary = self._run()
         self.assertEqual(summary["date"], self.date)
-        self.assertEqual(summary["projects_swept"], 4)
-        self.assertEqual(summary["projects_changed"], 3)
+        self.assertEqual(summary["projects_swept"], 5)
+        self.assertEqual(summary["projects_changed"], 4)
         self.assertEqual(summary["projects_skipped_unchanged"], 0)
         self.assertEqual(summary["projects_no_library"], 1)
-        self.assertEqual(summary["appended"], 6)
-        self.assertEqual(summary["quarantined"], 3)
+        self.assertEqual(summary["appended"], 10)
+        self.assertEqual(summary["quarantined"], 9)
         self.assertEqual(summary["skipped_duplicate"], 1)
         self.assertFalse(summary["repaired_partial_tail"])
+        self.assertEqual(summary["unclosed_fence_files"], 0)
 
         records = self._read_jsonl(self.stream_path)
-        self.assertEqual(len(records), 9)  # 6 lessons + 3 quarantines
+        self.assertEqual(len(records), 19)  # 10 lessons + 9 quarantines
         for rec in records:
             self.assertEqual(rec["v"], "stream-record.1")
             self.assertEqual(rec["swept"], self.date)
@@ -128,7 +129,7 @@ class TestIngestEndToEnd(unittest.TestCase):
             if r["kind"] == "lesson" and r["entry"]["id"] == "L0002" and r["project"] == "alpha"
         )
         self.assertEqual(l0002["origin"], "alpha#L0002")
-        self.assertEqual(l0002["entry_contract"], "library-entry.1")
+        self.assertEqual(l0002["entry_contract"], "library-entry.2")
         # No path field is stored (ROADMAP decision 12): `project` + registry
         # re-derive the file; source_hash pins its state. Absolute paths would
         # leak the local username/layout into the append-only journal.
@@ -151,7 +152,7 @@ class TestIngestEndToEnd(unittest.TestCase):
         summary = self._run()
         self.assertEqual(
             summary["per_project"]["alpha"],
-            {"appended": 3, "skipped_duplicate": 1, "quarantined": 3},
+            {"appended": 2, "skipped_duplicate": 1, "quarantined": 4},
         )
         self.assertEqual(
             summary["per_project"]["beta"],
@@ -160,6 +161,10 @@ class TestIngestEndToEnd(unittest.TestCase):
         self.assertEqual(
             summary["per_project"]["gamma"],
             {"appended": 1, "skipped_duplicate": 0, "quarantined": 0},
+        )
+        self.assertEqual(
+            summary["per_project"]["delta-wrap"],
+            {"appended": 5, "skipped_duplicate": 0, "quarantined": 5},
         )
         self.assertNotIn("delta", summary["per_project"])
 
@@ -177,7 +182,7 @@ class TestIngestEndToEnd(unittest.TestCase):
         self.assertEqual(summary2["skipped_duplicate"], 0)
         self.assertEqual(summary2["quarantined"], 0)
         self.assertEqual(summary2["projects_changed"], 0)
-        self.assertEqual(summary2["projects_skipped_unchanged"], 3)
+        self.assertEqual(summary2["projects_skipped_unchanged"], 4)
         self.assertEqual(summary2["per_project"], {})
 
         with open(self.stream_path, "rb") as f:
@@ -215,13 +220,54 @@ class TestIngestEndToEnd(unittest.TestCase):
         target_line = next(l for l in original.splitlines() if l.startswith("[L0002]"))
         try:
             with open(ALPHA_LIBRARY, "a", encoding="utf-8") as f:
-                f.write(target_line + "\n")
+                # Blank-line separated (corpus convention, docs/stream-schema.md
+                # marker-open predecessor rule): appending directly with no
+                # blank would fold the injected line into the still-open
+                # preceding entry's span instead of opening its own.
+                f.write("\n" + target_line + "\n")
 
             summary2 = self._run()
             self.assertGreaterEqual(
                 summary2["per_project"].get("alpha", {}).get("skipped_duplicate", 0), 1
             )
             self.assertEqual(summary2["appended"], 0)
+        finally:
+            with open(ALPHA_LIBRARY, "w", encoding="utf-8") as f:
+                f.write(original)
+
+    def test_journal_prefix_is_append_only_across_a_changed_file(self):
+        # The journal is append-only (CLAUDE.md §Domain): appending new
+        # records to an already-ingested file must never rewrite prior
+        # bytes. Run once, mutate a fixture LIBRARY (new blank-separated
+        # entry), run again, and assert the first journal's bytes are an
+        # exact prefix of the second's.
+        self._run()
+        with open(self.stream_path, "rb") as f:
+            journal_before = f.read()
+
+        with open(ALPHA_LIBRARY, encoding="utf-8") as f:
+            original = f.read()
+        new_entry = (
+            "\n[L0011] Appended for the prefix-guard test | tier: candidate | "
+            "added: 2026-07-11 | tags: fixture | lesson: A new entry appended "
+            "between two ingest runs. | evidence: Authored for "
+            "test_journal_prefix_is_append_only_across_a_changed_file. | "
+            "falsifier: If the journal's prior bytes moved, append-only broke.\n"
+        )
+        try:
+            with open(ALPHA_LIBRARY, "a", encoding="utf-8") as f:
+                f.write(new_entry)
+
+            summary2 = self._run()
+            self.assertEqual(
+                summary2["per_project"].get("alpha", {}).get("appended", 0), 1
+            )
+
+            with open(self.stream_path, "rb") as f:
+                journal_after = f.read()
+
+            self.assertGreater(len(journal_after), len(journal_before))
+            self.assertEqual(journal_after[: len(journal_before)], journal_before)
         finally:
             with open(ALPHA_LIBRARY, "w", encoding="utf-8") as f:
                 f.write(original)
@@ -261,7 +307,7 @@ class TestIngestEndToEnd(unittest.TestCase):
         # The journal must already contain the records despite the crash.
         self.assertTrue(os.path.exists(self.stream_path))
         records = self._read_jsonl(self.stream_path)
-        self.assertEqual(len(records), 9)
+        self.assertEqual(len(records), 19)
         self.assertFalse(os.path.exists(self.ledger_path))
 
         # A re-run completes the ledger and appends nothing new. Since the
@@ -273,7 +319,7 @@ class TestIngestEndToEnd(unittest.TestCase):
         self.assertEqual(summary2["quarantined"], 0)
         self.assertTrue(os.path.exists(self.ledger_path))
         records_after = self._read_jsonl(self.stream_path)
-        self.assertEqual(len(records_after), 9)
+        self.assertEqual(len(records_after), 19)
 
 
 if __name__ == "__main__":

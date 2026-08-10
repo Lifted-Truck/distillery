@@ -236,6 +236,75 @@
     quarantined entry (L0016, detector-calibration) is itself
     domain-general. Contract friction is now costing real promotion-worthy
     content; evidence appended to the overdue distillery-002 filing.
+15. **Adopt `library-entry.2`** (2026-08-10, provider ruling
+    `response-002.md`, all five questions answered; human directed
+    "proceed"). Parser upgrade per the ruling: entry boundary = `[Lxxxx]`
+    marker (multi-line entries fold, structural lines — fences, headings,
+    rules, anchors — skipped; blanks are not terminators); unlabeled
+    segments continuation-join with the pipe restored; bare tier by enum
+    match, never position; annotated placeholders on optional fields →
+    absent + `<field>_note`; unknown labels → `extra` map; required-field
+    placeholders and id/tier/date/empty-field violations still quarantine
+    (gate unweakened). **Seen-key amended to `(project, hash, kind)`** so a
+    contract upgrade's quarantine→lesson transitions append exactly once
+    (docs/stream-schema.md §Dedup amendment). Obligations owed the
+    provider: fixtures moved to the ruling (+ negative fixtures pinning
+    what still quarantines), and a re-parse report of what actually clears
+    (their prediction: 11 — "if the count is not 11, one of these rulings
+    is wrong"). Motivating case: the morphos#L0003 + HYPERSAW#L0020
+    build-provenance recurrence (both origins recorded; morphos's is
+    wrap-style and unreadable under `.1`).
+16. **Genesis regenerated from empty under `library-entry.2`; seen-key
+    stays `(project, hash)`** (2026-08-10, after critic REWORK on the
+    decision-15 design — the critic prototyped the design over all 34
+    LIBRARYs and found 6 blockers; all folded into
+    docs/stream-schema.md §library-entry.2). Supersedes decision 15's
+    seen-key amendment: the journal was never committed or consumed (the
+    ratified genesis hold), so regenerating from empty gives one contract
+    version in the journal, zero dangling resolved-quarantine records, and
+    no idempotency-invariant change. Old journal bytes archived locally
+    (uncommitted) before regeneration; the stream is deterministically
+    reproducible from LIBRARYs by construction. **Recorded for the future:**
+    any post-publication contract upgrade re-faces the quarantine→lesson
+    transition; options then are kind-in-seen-key or supersession links on
+    quarantine records — decide at that upgrade, not now. Key critic fixes
+    adopted: marker-at-line-start needs a blank/structural/SOF predecessor
+    (kills phantom spans from [Lxxxx] cross-references); heading/rule/anchor
+    lines TERMINATE spans; byte-exact pipe restoration ("|".join, never
+    " | "); segment-1-only bare tier per the canonical contract file (the
+    ruling-letter discrepancy is filed back); repeated known labels
+    continuation-join, never last-wins; duplicate-id-in-file quarantines
+    both; contract's exhaustive still-quarantine list + negative fixtures;
+    unclosed_fence observability; heading-style entries (^#+ [Lxxxx], 20
+    across 8 projects, invisible under both contracts) quarantine visibly +
+    filed as distillery-003. Clears accounting to the provider must
+    explain: predicted-11 is actually 12 on their own set (corpus drift —
+    morphos#L0002 quarantined after their filing), plus 2 unpredicted
+    clears (refraction-bench#L0002, Place#L0011), 2 correct
+    still-quarantines (Place#L0010 tier:retracted, vertex#L0001
+    supersedes:none), and 2 orphaned by the Tonality-Live registry rename
+    (decision 12 semantics).
+17. **Promotion candidate #2 designated: build-provenance recurrence —
+    `morphos#L0003` + `synthetic-worlds/HYPERSAW#L0020`** (2026-08-10,
+    human-directed). First OBSERVED two-independent-origin recurrence
+    (§4c qualified-at-source without sponsorship): HYPERSAW stamps git
+    hash + dirty marker (identity); morphos stamps compile timestamp
+    (freshness — "a version number cannot answer cached-vs-fresh because
+    it doesn't change between rebuilds"). The pool entry merges both as
+    variants of one lesson: a built artifact answers "am I running what I
+    just built?" itself — derived, visible build identity; never
+    hand-typed; don't fight the cache, make staleness visible. Attestation
+    is HUMAN (the texts differ too much for D2's deterministic signatures;
+    machine detection of this pair is D3's job — recorded so the
+    designation is not mistaken for a delivered D2 capability). Both
+    candidates (#1 decision 14, #2 here) await D3 proposals + D4 gates;
+    #2 is the stronger full-path test article (observed, not sponsored).
+    v2 parser regression found & fixed at lead integration: attest writes
+    back-to-back pipe-bearing entries with no blank separators, which the
+    predecessor rule alone folded into one span (10 lessons → 1
+    quarantine); span-open now also triggers on a pipe-bearing marker
+    line. Genesis regenerated: 126 lessons + 25 quarantines, all 68 v1
+    lessons preserved, clears = 14/2/2 exactly as the critic predicted.
 
 ## Open questions (blocking, ask the human)
 
