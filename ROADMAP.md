@@ -299,6 +299,32 @@
     designation is not mistaken for a delivered D2 capability). Both
     candidates (#1 decision 14, #2 here) await D3 proposals + D4 gates;
     #2 is the stronger full-path test article (observed, not sponsored).
+    **Candidate #3 forming (2026-08-12 roundup):** a four-project semantic
+    convergence on *verify the verifier* — FOUNDATIONS#L0005 (a gate never
+    observed to fail has not been tested), plainsynth#L0002 (a check
+    reporting "0 items examined" as success cannot fail), Place#L0012 (a
+    determinism test rendering twice in one process proves self-consistency,
+    not determinism), HYPERSAW#L0032/L0033/L0036 (shared-assumption
+    detectors confirm expectations; a calibration plant that does NOT fire
+    is a finding; pin your refusals). **Zero textual recurrence** — both D2
+    signature queries return empty, so this family is invisible to
+    deterministic detection and is the sharpest available D3 test case
+    (≥4 origins, semantic-only). Not designated: designation requires the
+    analyst's proposal, which is the point of D3.
+    **Consolidation-grammar gap filed as distillery-004** (2026-08-12):
+    HYPERSAW's 2026-08-11 LIBRARY consolidation writes
+    `supersedes: absorbs L0011, L0021, L0034 — consolidated …`; `supersedes`
+    is single-valued so both entries quarantine. Same species as the
+    annotated-placeholder ruling; three options offered, weak preference for
+    a distinct `absorbs:` field (absorbs ≠ replaces: folded-in evidence vs
+    invalidation — a distinction D3 will walk mechanically).
+    **Genesis committed 2026-08-12** (`f20289f`): 168 records (138 lessons
+    + 30 quarantines), 63 projects, uniformly `library-entry.2`, leak-scan
+    clean. Both hold conditions discharged (decision 12 fixed the path leak
+    before data persisted; decision 16 regenerated under the ruling).
+    Append-only in force from this commit. Accepted: 3 spectrogen
+    quarantines pending the distillery-003 ruling — correct under the
+    current contract, superseded (not falsified) by any ruling.
     v2 parser regression found & fixed at lead integration: attest writes
     back-to-back pipe-bearing entries with no blank separators, which the
     predecessor rule alone folded into one span (10 lessons → 1
