@@ -195,6 +195,22 @@ In order; every rejection recorded with its reason:
    claim it unopposed. (104 of 138 lessons are `synthetic-worlds/*`; every
    known candidate is siblings-only, so this is the common case, not the
    corner.)
+5b. **Shared-source independence** (decision 19). §4c requires a pattern
+   found *independently* by ≥2 siblings — "**shared-source convergence
+   counts once, not twice**." Two projects developed together produce
+   *echoes*, not corroboration, and the difference is invisible in the
+   lesson text. Two checks, both deterministic:
+   - **Declared topology**: a pinned `COLLABORATOR_SETS` table (human-
+     supplied; collaboration is not derivable from the stream). If every
+     origin falls inside one declared set, `shared_source: true`.
+   - **Cross-citation**: if the origins' `evidence` fields name each
+     other's projects, `shared_source: true` — an echo usually admits it
+     (FOUNDATIONS L0003/L0008/L0010 cite HYPERSAW; HYPERSAW L0036 cites
+     FOUNDATIONS).
+   When `shared_source`, force `route: undecided` and label the finding
+   *echo, not independent corroboration* — the analyst may argue the
+   lesson generalizes anyway, but may not present it as a two-origin
+   recurrence. This is §4c's rule, previously unimplemented.
 6. **D2 overlap** — demote to a D2 pointer only if the origin set adds
    **nothing beyond a single D2 signature group**; a D2-visible pair inside
    a larger semantic family is kept and its D2-visible subset annotated.

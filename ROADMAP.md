@@ -404,6 +404,41 @@
     line. Genesis regenerated: 126 lessons + 25 quarantines, all 68 v1
     lessons preserved, clears = 14/2/2 exactly as the critic predicted.
 
+19. **Shared-source independence check; FOUNDATIONS↔HYPERSAW registered as
+    the first collaborator pair** (2026-08-15, human-supplied topology).
+    autonomous README §4c has always required a pattern found
+    *independently* by ≥2 siblings — "shared-source convergence counts
+    once, not twice" — and D3's design did not implement it. Two projects
+    developed together generate **echoes**, not corroboration, and nothing
+    in the lesson text distinguishes them, so an unguarded analyst would
+    read a collaboration artifact as its strongest evidence class.
+    Implemented as validation rule 5b (docs/analyst.md): a pinned
+    `COLLABORATOR_SETS` table (human-supplied — collaboration topology is
+    NOT derivable from the stream) plus a mechanical cross-citation check
+    on `evidence` fields; either match sets `shared_source: true` and
+    forces `route: undecided`, labelled *echo, not independent
+    corroboration*.
+    **Registered set #1: `{synthetic-worlds/FOUNDATIONS,
+    synthetic-worlds/HYPERSAW}`** — FOUNDATIONS is a unified
+    plumbing/integration library for the human's synths and audio devices;
+    HYPERSAW is its close consumer. Corroborated in-stream: FOUNDATIONS
+    L0003/L0008/L0010 cite HYPERSAW in evidence, HYPERSAW L0036 cites
+    FOUNDATIONS. Note both are `synthetic-worlds/*`, so decision 18's
+    single-group rule already forced `undecided` — but that was a
+    coincidental safety net, not an independence check, and it would not
+    have caught a cross-group collaborating pair.
+    **Watch note (reporting, NOT weighting):** FOUNDATIONS is a
+    provider-shaped project and is generating lessons squarely in
+    distillery's own domain — rosters going stale (L0002, L0011: the
+    registry), status fields as content (L0009: the integrations channel's
+    `ball`/`status`, which our own 13-day overdue filing proves), day-one
+    placeholders as absence-not-value (L0015: the `supersedes: —` ruling),
+    provenance naming where an artefact is CORRECT not where it appeared
+    (L0017). Roundups should surface FOUNDATIONS lessons for review.
+    Deliberately NOT implemented as an analyst priority weight: weighting a
+    project would corrupt decision 13's "recurrence outranks eloquence" and
+    put a human preference inside the proposal path.
+
 ## Open questions (blocking, ask the human)
 
 - (none currently) — the genesis fill remains gated only on `distillery-002`
