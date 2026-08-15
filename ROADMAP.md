@@ -367,7 +367,21 @@
       the stream so later runs don't re-propose forever") are a new record
       kind `disposition` → **`stream-record.2`**, appended after human
       ratification, never edits. Ratified here because it touches a
-      protected path.
+      protected path; the record shape is specified in docs/stream-schema.md
+      **before** any code (per-record `v` so existing records are never
+      rewritten; `project`/`raw`/`source_hash` do not apply; `load_seen`
+      must be made kind-aware before the first disposition is appended, or
+      every later ingest warns). Dispositioned lessons are **seen, not
+      excluded** — decision 13 says later runs *see* prior dispositions;
+      excluding them would make a lesson permanently invisible the moment
+      it is routed once, even as new sibling evidence arrives, and that
+      mistake is unrecallable in an append-only journal. Rejection is
+      scoped to findings whose origin set is a **subset** of an
+      already-dispositioned set.
+      **Consequence, accepted:** once dispositions exist the journal is no
+      longer reproducible from LIBRARYs alone (ratification is not swept
+      content), which **retires decision 16's "regenerate from empty"
+      escape hatch** — future contract upgrades must migrate forward.
     - Also adopted: rename-aliasing before the project count; D2-overlap
       demotes only when a finding adds nothing beyond one signature group;
       `single-origin` findings capped per run; conflicting-route merges

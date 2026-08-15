@@ -53,6 +53,53 @@ and assert byte identity.
 | `entry` | object | The parsed form per `library-entry.1` (id, title, tier, added, tags, lesson, evidence, falsifier, and optional origin/supersedes/recurred). The lesson's own `origin` field (promotion back-links) is distinct from the record's `origin`. |
 | `entry_contract` | `"library-entry.1"` | Which grammar parsed `entry` — survives future `library-entry.2` migrations. |
 
+### `kind: "disposition"` — a ratified routing decision (`stream-record.2`)
+
+Added by ROADMAP decision 18 for D3. Records that a human ratified a
+routing decision about a finding, so later analyst runs see prior
+dispositions instead of re-proposing forever (decision 13). Appended after
+ratification; never an edit.
+
+**Version semantics**: `v` is **per-record**, not global. Existing
+`lesson`/`quarantine` records keep `v: "stream-record.1"` and are never
+rewritten (append-only); only `disposition` records carry
+`v: "stream-record.2"`. A mixed-version journal is therefore normal and
+expected — readers dispatch on `kind`, and `v` records which contract
+shaped that record.
+
+Common fields apply **selectively** — most describe a source LIBRARY line,
+which a disposition has none of:
+
+| Field | Applies | Meaning |
+|---|---|---|
+| `v` | yes | `"stream-record.2"`. |
+| `kind` | yes | `"disposition"`. |
+| `swept` | yes | Ratification date, injected at the CLI edge. |
+| `project` | **no** | A disposition spans origins, often across projects. |
+| `source_hash` | **no** | No source file. |
+| `raw` | **no** | No source line. |
+| `hash` | yes | `sha256` of the canonical JSON of `{origins, route, proposal}` — the dedup identity, so re-ratifying the same disposition is a no-op. |
+| `origins` | yes | The finding's origin list, sorted. |
+| `route` | yes | The ratified route (decision 13 enum). |
+| `proposal` | yes | The proposal file that carried the finding. |
+| `note` | optional | The human's reasoning. |
+
+**`load_seen` compatibility is required**: `journal.load_seen`
+(`journal.py:41`) keys on `(project, hash)` and warns on any record missing
+either. A disposition has no `project`, so the seen-key derivation must be
+made kind-aware **before** the first disposition is appended, or every
+future ingest run prints a spurious warning per disposition. Ingest's
+`(project, hash)` dedup for lessons/quarantines is unchanged.
+
+**Reproducibility consequence, stated plainly**: once dispositions exist,
+the journal is **no longer reproducible from the LIBRARYs alone** — a
+disposition is human ratification, not swept content. This retires the
+"regenerate from empty" escape hatch that decision 16 used for the
+`library-entry.2` upgrade. Any future contract upgrade must migrate
+forward (or re-derive lessons while preserving dispositions), not
+regenerate. Recorded here because it is the kind of property that is
+invisible until the moment it is needed.
+
 ### `kind: "quarantine"` — a malformed entry line
 
 | Field | Type | Meaning |
