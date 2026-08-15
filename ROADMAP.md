@@ -318,6 +318,64 @@
     annotated-placeholder ruling; three options offered, weak preference for
     a distinct `absorbs:` field (absorbs ≠ replaces: folded-in evidence vs
     invalidation — a distinction D3 will walk mechanically).
+18. **D3 analyst design rulings** (2026-08-12, after critic REJECT of the
+    first draft; docs/analyst.md is the spec). The rejected draft
+    partitioned the stream by tag; executed over the committed stream it
+    reached **43 of 138 lessons (31%) and found none of the three known
+    targets** — not candidate #1, not candidate #2 (the designated D4
+    full-path test article), not the candidate-#3 family. Root cause:
+    project-local tag vocabularies (the manifest has each project declare
+    its own) never align cross-project — the six candidate-#3 records share
+    ZERO tags pairwise across their four projects. The draft also carried a
+    **fabricated** justification (three named tags that appear on none of
+    those records) — recorded, not quietly dropped, because it is the exact
+    failure mode D3 exists to prevent and it is why the coverage hole went
+    unnoticed. Rulings:
+    - **Bundling is deterministic full-text sharding in journal order**
+      (coverage 138/138 by construction), plus a two-pass scout→deep
+      pipeline: scouts nominate candidate origin sets only; a fresh agent
+      with the candidates' full text authors the finding. The corpus is
+      ~31K tokens and fits one context — this is *less* machinery than the
+      rejected design, not more (reduce, never invent).
+    - **Provenance guard is mandatory, not opt-in**: every cited origin
+      carries a `support_quote` (≥40 normalized chars, substring of that
+      origin's lesson under a pinned NFC/casefold/whitespace predicate).
+      Origin→record resolution pinned (an origin may map to N records after
+      in-place LIBRARY edits; quote may match any, render the latest).
+      The guard's residual class (real origins + invented relationship;
+      over-generalization) is named in the design, not papered over.
+    - **Group breadth** (human ruling): if all of a finding's origins share
+      one group prefix, `single_group: true` and `route` is **forced to
+      `undecided`** — the analyst may argue for pool altitude but cannot
+      claim it unopposed. 104/138 lessons are `synthetic-worlds/*`, so this
+      is the common case; it keeps decision 13's breadth-decides-altitude
+      rule from losing its teeth in a group-heavy corpus.
+    - **Zero-writes is a tool grant**, via a committed
+      `.claude/agents/analyst.md` with `tools: Read, Grep, Glob` — **no
+      Bash** (Bash is write-capable; every other read-only agent here has
+      it) and an explicit model pin. Asserted by a Layer-0 frontmatter test
+      plus a `git status --porcelain` check in Layer-E.
+    - **Gate design, stated not slipped**: the D3 gate's detection half is
+      satisfied by a **dated, recorded Layer-E run**, not by CI (model
+      output is nondeterministic and cannot be golden-matched). Each run
+      appends a metrics line to a tracked `evals/analyst-runs.tsv` so a
+      capability regression is visible rather than silently green. Layer-0
+      (CI-blocking) covers the deterministic core, the adversarial
+      finding-rejection cases, and zero-writes. Guaranteed vs measured are
+      labelled throughout.
+    - **Disposition annotations** (decision 13's "non-pool routes annotate
+      the stream so later runs don't re-propose forever") are a new record
+      kind `disposition` → **`stream-record.2`**, appended after human
+      ratification, never edits. Ratified here because it touches a
+      protected path.
+    - Also adopted: rename-aliasing before the project count; D2-overlap
+      demotes only when a finding adds nothing beyond one signature group;
+      `single-origin` findings capped per run; conflicting-route merges
+      force `undecided`; superseded and already-dispositioned lessons
+      excluded from analysis; `confidence` deliberately omitted (a model
+      scalar must never reach the validation path); proposals quote bounded
+      spans, never full bodies, and the leak assertion extends to
+      `proposals/`.
     **Genesis committed 2026-08-12** (`f20289f`): 168 records (138 lessons
     + 30 quarantines), 63 projects, uniformly `library-entry.2`, leak-scan
     clean. Both hold conditions discharged (decision 12 fixed the path leak
