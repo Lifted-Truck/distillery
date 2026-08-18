@@ -1,0 +1,13 @@
+[
+  {
+    "origins": [
+      "alpha#L0005",
+      "beta#L0005"
+    ],
+    "projects": [
+      "alpha",
+      "beta"
+    ],
+    "signature": "cfc86559051d0fab"
+  }
+]

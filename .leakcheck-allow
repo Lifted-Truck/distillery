@@ -1,0 +1,17 @@
+# leak_gate exemptions — narrow, per-file, and justified.
+#
+# Policy: an exemption is a commit. Prefer fixing the source (as
+# tests/unit/test_ingest.py was fixed — it now builds the pattern as a regex
+# instead of a literal, so it no longer matches itself and needs no
+# exemption). Exempt ONLY where the file cannot be changed.
+#
+# Deliberately per-file rather than `traces/*`: traces are append-only, but a
+# FUTURE trace containing an identity path must still be judged on its merits
+# rather than pre-forgiven by a glob.
+
+# Append-only decision traces (CLAUDE.md §Provenance: "Traces are append-only.
+# Never edit or delete a prior trace"). Both describe the leak-guard work of
+# decision 12 and quote the pattern they are documenting; neither contains a
+# real path. They cannot be edited to avoid the literal, so they are exempt.
+traces/2026-07-17-drop-source-path.md
+traces/2026-08-12-genesis-commit-roundup.md

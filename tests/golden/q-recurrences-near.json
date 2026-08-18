@@ -1,0 +1,24 @@
+[
+  {
+    "origins": [
+      "alpha#L0006",
+      "gamma#L0006"
+    ],
+    "projects": [
+      "alpha",
+      "gamma"
+    ],
+    "signature": "414ede8e4ea7c097"
+  },
+  {
+    "origins": [
+      "alpha#L0005",
+      "beta#L0005"
+    ],
+    "projects": [
+      "alpha",
+      "beta"
+    ],
+    "signature": "bd45a365df0c44ba"
+  }
+]

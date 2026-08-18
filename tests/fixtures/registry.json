@@ -1,0 +1,11 @@
+{
+  "schema": "ecosystem-registry.0",
+  "purpose": "Fixture registry for distillery D1 unit/end-to-end tests. Not the real ecosystem registry.",
+  "rules": [
+    { "project": "tests/fixtures/projects/alpha" },
+    { "project": "tests/fixtures/projects/beta" },
+    { "project": "tests/fixtures/projects/gamma" },
+    { "project": "tests/fixtures/projects/delta" },
+    { "project": "tests/fixtures/projects/delta-wrap" }
+  ]
+}
