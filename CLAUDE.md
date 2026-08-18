@@ -9,6 +9,10 @@ per-project. Project-specific facts live in §Domain and in ROADMAP.md.
   criteria, invariants, and open questions live there and only there. If the
   conversation and ROADMAP.md disagree, ROADMAP.md wins; if ROADMAP.md is
   wrong, fixing it is the first task.
+- **DECISIONS.md is the append-only decision log** (kit 2.0.0). A ratified
+  choice and its *why* land there, never in ROADMAP; supersede a decision
+  with a new one that cites it, never edit it. Decisions 1–20 were migrated
+  there verbatim from ROADMAP on 2026-08-18.
 - **Passing ≠ done.** Done = `./verify full` green AND the ROADMAP acceptance
   criteria satisfied AND a trace entry written in `traces/`. Never collapse
   these into each other.
@@ -58,6 +62,23 @@ Stop and ask before: deleting files, changing the public interface of
 anything, editing `./verify` or the gates it runs, adding a dependency,
 any git operation beyond add/commit on the working branch, and anything §Domain
 lists as protected.
+
+
+<!-- kit:mailbox:2.1.0 — appended by /retrofit; kit-owned section -->
+## Mailbox
+
+- **`integrations/` in THIS repo is the only place briefs to us land.** If a
+  brief is not here, it is not ours to answer.
+- **Responses to OUR briefs live in the PROVIDER's tree**, not here. Nothing
+  signals us when one arrives, so they must be pulled and read deliberately.
+  This is not hypothetical: `library-entry.3` was ruled on 2026-08-10 in
+  `autonomous/integrations/distillery/response-003.md` and sat unread for
+  eight days while we filed a follow-up brief calling those items open.
+- **Other repos' exchanges may be READ freely, but never ACTED on** and never
+  raised to the human as ours. Reading X↔Y is fine and often useful; owning it
+  is not. If an exchange between other repos genuinely concerns us, the
+  response is to file our own brief — not to answer theirs.
+<!-- /kit:mailbox:2.1.0 -->
 
 ---
 

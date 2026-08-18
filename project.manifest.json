@@ -1,8 +1,9 @@
 {
-  "schema": "project-manifest.0 (draft \u2014 kit v2 will formalize)",
+  "schema": "project-manifest.0 (draft — kit v2 will formalize)",
+  "kit_version": "2.4.1",
   "status": "RATIFIED 2026-07-10 (user go-ahead at D0 gate)",
   "survey": {
-    "what_is_it": "service/pipeline \u2014 ecosystem memory infrastructure (stream ingest, analyst, distilled pool)",
+    "what_is_it": "service/pipeline — ecosystem memory infrastructure (stream ingest, analyst, distilled pool)",
     "architecture_rung": {
       "choice": 2,
       "menu": [
@@ -12,7 +13,7 @@
       ],
       "earned_by": "analyst phase (D3) uses fan-out read-only subagents; correctness stakes of a shared memory store warrant an independent verifier. No parallel writers, no seams that justify a fleet."
     },
-    "domain_core_llm_must_not_own": "sweep mechanics, hash ledger, append-only journal, dedup, eviction, staleness checks, provenance queries \u2014 all deterministic code. AI only: analyst pattern-mining (propose-only) and promotion judgment.",
+    "domain_core_llm_must_not_own": "sweep mechanics, hash ledger, append-only journal, dedup, eviction, staleness checks, provenance queries — all deterministic code. AI only: analyst pattern-mining (propose-only) and promotion judgment.",
     "oracle_shape": {
       "goldens": "strict pinned outputs for ledger ops and fixture-stream queries (deterministic by construction)",
       "ci": "single-version smoke initially; matrix when consumers exist"
