@@ -1,6 +1,6 @@
 {
   "schema": "project-manifest.0 (draft — kit v2 will formalize)",
-  "kit_version": "2.4.1",
+  "kit_version": "2.5.1",
   "status": "RATIFIED 2026-07-10 (user go-ahead at D0 gate)",
   "survey": {
     "what_is_it": "service/pipeline — ecosystem memory infrastructure (stream ingest, analyst, distilled pool)",
