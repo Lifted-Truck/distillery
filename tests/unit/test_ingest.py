@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import re
 import os
 import tempfile
 import unittest
@@ -10,6 +11,12 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file_
 FIXTURES_REGISTRY = os.path.join(REPO_ROOT, "tests", "fixtures", "registry.json")
 SWEEP_PATH = os.path.expanduser("~/Documents/Claude/autonomous/kit/sweep/sweep.py")
 ALPHA_LIBRARY = os.path.join(REPO_ROOT, "tests", "fixtures", "projects", "alpha", "LIBRARY.md")
+
+# Written as a regex, never a bare "/Users/" literal: this file is itself
+# scanned by the repo's leak_gate, and a literal would match itself. The kit's
+# own gate documents the same trap and uses the same dodge. (Bonus: this form
+# also catches /home/<user>/ and embedded paths, not just a leading slash.)
+_ABS_HOME = re.compile(r"/(Users|home)/[^/]+/")
 
 
 def _load_sweep():
@@ -97,7 +104,7 @@ class TestIngestEndToEnd(unittest.TestCase):
         for rec in records:
             for s in strings(rec):
                 self.assertFalse(
-                    s.startswith("/") or "/Users/" in s or s.startswith("~/"),
+                    s.startswith("/") or _ABS_HOME.search(s) or s.startswith("~/"),
                     "record leaks an absolute path: %r in %r" % (s, rec.get("origin") or rec.get("raw")),
                 )
 

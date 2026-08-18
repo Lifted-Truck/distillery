@@ -439,6 +439,32 @@
     project would corrupt decision 13's "recurrence outranks eloquence" and
     put a human preference inside the proposal path.
 
+20. **Kit 2.4.0 adopted; leak_gate present for the first time**
+    (2026-08-18, human-directed migration; `./verify` is charter-gated, so
+    this edit is on that authorization). `.kit/kit-gates.sh` + `.kit/MANIFEST`
+    vendored by `kit_sync.py`; `./verify` sources them with a **hard exit**
+    when missing (a degraded run past a missing privacy gate is precisely the
+    bug the gate prevents). Our `record()` was byte-identical to the kit's
+    and was deleted in favour of the vendored one; `kit_integrity` and
+    `leak_gate` run first in `fast()`; every project gate kept verbatim.
+    **Honest finding: distillery had NO leak gate at all** — `grep -c
+    leak_gate verify` was 0 while the repo read as current. We were one of
+    the ungated repos the 2026-08-18 fleet audit describes. The gap was
+    self-noticed earlier in the session and filed as a background task; it
+    was never closed, which is its own lesson: noticing a missing gate is
+    not the same as having one, and only the mechanism closes it.
+    **The gate fired on its first run** (3 hits, all docs-about-the-pattern,
+    no real leaks) and was resolved two ways, deliberately not one:
+    - `tests/unit/test_ingest.py` **fixed at source** — our own leak-guard
+      assertion contained a bare `"/Users/"` literal and so matched itself.
+      Rewritten to build the pattern as a regex (the same dodge the kit's own
+      gate documents for itself), which also widened it to `/home/<user>/`
+      and embedded paths. Fixing beats exempting: the file stays gated.
+    - Two **append-only traces** exempted via `.leakcheck-allow`, per exact
+      path, never `traces/*` — they document decision 12's leak fix and quote
+      the pattern, and the charter forbids editing a prior trace. A glob
+      would pre-forgive future traces; per-file forces each to be judged.
+
 ## Open questions (blocking, ask the human)
 
 - (none currently) — the genesis fill remains gated only on `distillery-002`

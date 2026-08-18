@@ -2,19 +2,26 @@
 # verify — oracle dispatcher. The harness's only interface to project QC.
 # Usage: ./verify fast | full | report
 # Contract: exit 0 = green, nonzero = red. Writes .harness/last-verify.json.
+#
+# THIS FILE IS PROJECT-OWNED. Kit-owned gates (record, leak_gate,
+# kit_integrity) live in .kit/kit-gates.sh — vendored and checksummed; never
+# edit or inline them. Update with: python3 <kit>/kit_sync.py .
 set -uo pipefail
 
 TARGET="${1:-fast}"
 HARNESS_DIR=".harness"
 mkdir -p "$HARNESS_DIR"
 
-record() { # record <target> <exit_code>
-  local git_hash; git_hash=$(git rev-parse --short HEAD 2>/dev/null || echo "no-git")
-  printf '{"target":"%s","exit":%d,"git":"%s","ts":"%s"}\n' \
-    "$1" "$2" "$git_hash" "$(date -u +%FT%TZ)" > "$HARNESS_DIR/last-verify.json"
-  rm -f "$HARNESS_DIR/dirty"
-  return "$2"
-}
+# Kit-owned gates: record, leak_gate, kit_integrity. A repo missing this file
+# is not a lesser repo, it is an UNGATED one, so failing loudly beats degrading
+# quietly — a silently skipped privacy gate is exactly the shape of bug the
+# gate exists to prevent.
+if [ -r .kit/kit-gates.sh ]; then
+  . .kit/kit-gates.sh
+else
+  echo "verify: .kit/kit-gates.sh missing — run kit_sync.py (gates cannot be skipped)" >&2
+  exit 1
+fi
 
 fast() {
   # ---- Layer-0: seconds, not minutes. CI-blocking. -------------------------
@@ -22,6 +29,8 @@ fast() {
   # D1 extension (ROADMAP decision 4): stdlib lint floor + unit tests via
   # python3 -m unittest (pytest/ruff deferred until the human provisions them).
   local ok=0
+  kit_integrity || ok=1      # kit-owned files must match .kit/MANIFEST
+  leak_gate     || ok=1      # privacy gate: kit-core, keep it first
   for f in README.md CLAUDE.md ROADMAP.md project.manifest.json; do
     [ -f "$f" ] || { echo "verify[fast]: missing $f" >&2; ok=1; }
   done
