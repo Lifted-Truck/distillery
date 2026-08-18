@@ -12,3 +12,4 @@ entries whose trigger matches the work in hand.
 | [L0004](LIBRARY.md) | deciding whether to commit data whose schema is still under a pending ruling | stream-schema, provenance |
 | [L0005](LIBRARY.md) | starting a session where this repo has outstanding briefs with another repo | integrations, provenance |
 | [L0006](LIBRARY.md) | verifying that a vendored or generated check is actually protecting you | gate-discipline, harness, oracle-discipline |
+| [L0007](LIBRARY.md) | about to reuse a procedure a past decision approved — check its precondition still holds | provenance, gate-discipline, stream-schema |

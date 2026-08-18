@@ -62,21 +62,13 @@ acceptance criteria, invariants and open questions.
 
 ## Explicit debt (recorded, not hidden)
 
-- **Parser is `library-entry.2`; the contract is now `library-entry.3`.**
-  Ruled 2026-08-10 in `autonomous/integrations/distillery/response-003.md`
-  (block form admitted — closes distillery-003's ~20 invisible heading-style
-  entries; our three corpus-forced grammar rules adopted as contract-owned;
-  bare-tier segment-1 rule confirmed, with the general principle that *the
-  contract file is normative and a response letter never is*) and extended
-  2026-08-17 in `response-004.md` (`absorbs:` accepted as option (b) — a
-  distinct many-to-one field: `supersedes` means invalidated, `absorbs` means
-  those entries are now special cases whose evidence CONTRIBUTES weight).
-  **Not attempted in the 2026-08-18 retrofit**: a contract migration needs its
-  own critic round and a re-parse accounting, and folding it into a
-  scaffolding retrofit is how both get done badly. Until it lands, entries
-  written here stay in the v2/v3 common subset so our own parser does not
-  quarantine our own LIBRARY. Discovered only because the retrofit's currency
-  check surfaced unread provider responses — see LIBRARY L0005.
+- **CLEARED 2026-08-18** — the parser was `library-entry.2` while the contract
+  was v3; it is now v3 (DECISIONS 21). Block form admitted on read, `absorbs`
+  registered as a real field. Accounting filed to autonomous as
+  `report-003`: 23 cleared, 43 newly visible, 160/160 prior lessons
+  preserved, 0 lost, append-only prefix intact.
+- Mailbox contract-test fixtures still owe their v3 refresh (autonomous:
+  "your obligation-2 mailbox refresh now has more to carry").
 
 ## Open questions (blocking, ask the human)
 

@@ -14,7 +14,7 @@ import os
 from distillery import entry_parser, journal
 
 STREAM_RECORD_VERSION = "stream-record.1"
-ENTRY_CONTRACT_VERSION = "library-entry.2"
+ENTRY_CONTRACT_VERSION = "library-entry.3"
 
 
 def _sha256_16(data):
@@ -106,7 +106,15 @@ def run_ingest(registry, sweep_mod, stream_path, ledger_path, date):
         for line_no, kind, item in combined:
             raw = item["raw"]
             line_hash = _sha256_16(raw.encode("utf-8"))
-            key = (name, line_hash)
+            # Seen-key includes KIND (ROADMAP decision 16 deferred this to the
+            # first post-publication contract upgrade; library-entry.3 is it).
+            # A contract upgrade can re-classify a previously-quarantined raw
+            # line as a lesson WITHOUT changing its bytes -- HYPERSAW's
+            # `absorbs:` entries are exactly that. Under a (project, hash) key
+            # the historical quarantine record would block the lesson append
+            # forever; with kind in the key the transition appends once and the
+            # old quarantine record survives as append-only history.
+            key = (name, line_hash, kind)
 
             if key in seen:
                 skipped_dup += 1

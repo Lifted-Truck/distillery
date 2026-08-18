@@ -136,7 +136,7 @@ class TestIngestEndToEnd(unittest.TestCase):
             if r["kind"] == "lesson" and r["entry"]["id"] == "L0002" and r["project"] == "alpha"
         )
         self.assertEqual(l0002["origin"], "alpha#L0002")
-        self.assertEqual(l0002["entry_contract"], "library-entry.2")
+        self.assertEqual(l0002["entry_contract"], "library-entry.3")
         # No path field is stored (ROADMAP decision 12): `project` + registry
         # re-derive the file; source_hash pins its state. Absolute paths would
         # leak the local username/layout into the append-only journal.
