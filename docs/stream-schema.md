@@ -190,7 +190,20 @@ missing/placeholder required fields; id/tier/date shape violations; an
 a placeholder) — negative fixtures pin each so the forgiveness cannot
 creep. The gate is not weakened.
 
-**Seen-key: unchanged, `(project, hash)`.** The quarantine→lesson
+**Seen-key: `(project, hash, kind)`** (amended 2026-08-18, decision 21).
+Decision 16 deferred this to "any post-publication contract upgrade";
+`library-entry.3` is that upgrade. A contract upgrade can re-classify a
+previously-quarantined raw line as a lesson **without changing its bytes**
+(HYPERSAW's `absorbs:` entries are exactly that), and under a two-part key
+the historical quarantine record blocks the lesson append forever. With
+`kind` in the key the transition appends once and the old quarantine record
+survives as append-only history.
+
+**Regeneration is no longer available.** The journal is committed
+(`f20289f`), so "regenerate from empty" — decision 16's escape hatch — would
+now ERASE history: entries consolidated away at source (HYPERSAW L0011/
+L0014/L0021, absorbed on 2026-08-11) exist only in the journal. Upgrades
+migrate forward by appending. Superseded text: The quarantine→lesson
 transition problem is moot for the genesis fill: the journal has never been
 committed or consumed, so it is **regenerated from empty under
 `library-entry.2`** (ROADMAP decision 16) — one contract version in the

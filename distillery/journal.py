@@ -15,7 +15,7 @@ import sys
 
 
 def load_seen(path):
-    """Scan the journal, returning the set of (project, hash) seen-keys.
+    """Scan the journal, returning the set of (project, hash, kind) seen-keys.
 
     Invalid lines (bad JSON, or missing project/hash) are skipped with a
     visible stderr warning — never a crash.
@@ -38,10 +38,10 @@ def load_seen(path):
                 )
                 continue
             try:
-                seen.add((rec["project"], rec["hash"]))
+                seen.add((rec["project"], rec["hash"], rec["kind"]))
             except (KeyError, TypeError):
                 print(
-                    "journal: skipping malformed record (missing project/hash) at %s:%d"
+                    "journal: skipping malformed record (missing project/hash/kind) at %s:%d"
                     % (path, line_no),
                     file=sys.stderr,
                 )

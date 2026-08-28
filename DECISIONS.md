@@ -419,3 +419,35 @@
       path, never `traces/*` — they document decision 12's leak fix and quote
       the pattern, and the charter forbids editing a prior trace. A glob
       would pre-forgive future traces; per-file forces each to be judged.
+
+21. **`library-entry.3` adopted; seen-key becomes `(project, hash, kind)`**
+    (2026-08-18). Clears the explicit debt recorded at the 2.4.1 retrofit.
+    v3 delta: three of four changes (structural terminators, span-open
+    condition, repeated-label continuation-join) were already our behaviour
+    and are now contract-owned; the real work was **block form on read**
+    (three heading shapes, three field delimiters, middot-separated inline
+    bold fields, title-on-next-line) and the **`absorbs`** field. `absorbs`
+    is deliberately distinct from `supersedes`: superseded means the entry
+    was WRONG and must not be promoted; absorbed means it is now a special
+    case whose evidence CONTRIBUTES weight — a distinction D3 walks
+    mechanically. Registered in the label-opening rule, not just prose and
+    schema, per the contract's own recorded defect where a field that could
+    never open was guarded by a check that could never fire.
+    **Seen-key amended** as decision 16 anticipated: a contract upgrade
+    re-classifies a quarantine as a lesson without changing its bytes, and a
+    two-part key would block that append forever.
+    Accounting (append-only, 198 → 270 records): **23 cleared**
+    (quarantine → lesson), **43 newly visible or new**, **160/160 prior
+    lessons preserved**, **0 lost**; 10 still quarantine, all correctly.
+22. **Regeneration retired as an upgrade path** (2026-08-18, learned the
+    hard way in the same session). Decision 16 licensed "regenerate the
+    journal from empty" *because the journal was uncommitted*. It has been
+    committed since `f20289f`. Reaching for the same procedure after that
+    precondition lapsed silently erased three lessons
+    (`synthetic-worlds/HYPERSAW#L0011/L0014/L0021`) that HYPERSAW had
+    consolidated away at source — they existed ONLY in the journal, which is
+    precisely what an append-only warehouse is for. Caught by the re-parse
+    accounting's regression column, not by any gate. Restored from git and
+    re-done as an append. **Contract upgrades migrate forward by appending;
+    regeneration is not an available path while the journal is published.**
+
